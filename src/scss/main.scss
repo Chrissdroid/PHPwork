@@ -1,0 +1,41 @@
+@import "./components/color-variables";
+
+$primary-color: color("deep-purple", "darken-1");
+$secondary-color: color("indigo", "lighten-3");
+
+$collection-bg-color: color("indigo", "lighten-2");
+$collection-border-color: color("indigo", "lighten-1");
+
+$card-bg-color: color("blue-grey", "darken-2");
+
+$input-border-color: color("blue-grey", "lighten-5");
+
+$dropdown-bg-color: color("blue-grey", "darken-2");
+$dropdown-hover-bg-color: color("blue-grey", "darken-1");
+
+$font-stack: 'Nunito', -apple-system, BlinkMacSystemFont, "Segoe UI", Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif !default;
+
+body {
+	max-width: 100vw;
+	min-height: 100vh;
+	background-color: color("blue-grey", "darken-3");
+	color: color("blue-grey", "lighten-5");
+}
+
+main {
+	margin-top: 2em;
+}
+
+.autocomplete-content li .highlight {
+	color: color("indigo", "lighten-5") !important;
+}
+
+.badge {
+	color: color("blue-grey", "darken-2") !important;
+}
+
+.card-title, input {
+	color: color("blue-grey", "lighten-5") !important;
+}
+
+@import "materialize";
