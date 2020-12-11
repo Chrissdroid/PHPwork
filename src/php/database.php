@@ -1,4 +1,21 @@
 <?php
+/**
+ * $data array - tableau des utilisateurs
+ * 
+ * $data[x] array - un utilisateur
+ * 
+ * utilisateur[firstName] string - Prenom 
+ * utilisateur[lastName] string - Nom
+ * utilisateur[age] unsigned int - Age
+ * utilisateur[avatar] array - Image d'utilisateur
+ * utilisateur[avatar][type] string[IMG|SVG] - Type de l'image 
+ * utilisateur[avatar][path] string - Url de l'image ou code svg
+ * utilisateur[description] string - Description de l'utilisateur
+ * utilisateur[theme] array - Theme de couleur de l'utilisateur 
+ * utilisateur[theme][color] string - Couleur de l'utilisateur
+ * utilisateur[theme][acc] string - Accentuation de la couleur
+ * [Voir la doc](https://materializecss.com/color.html)
+ */
 $data = [
 	0 => [
 		'firstName' => 'Robert',

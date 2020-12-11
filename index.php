@@ -14,19 +14,35 @@ if (!empty($_GET['q'])) {
 }
 else $results = $data;
 
-function svgUrlEncode($data) {
-	$data = \preg_replace('/\v(?:[\v\h]+)/', ' ', $data);
-	$data = \str_replace('"', "'", $data);
-	$data = \rawurlencode($data);
+/**
+ * Méthode pour transformer un code svg en url
+ *
+ * @param string $url code svg à transformer 
+ *
+ * @return string code formaté
+ */
+function svgUrlEncode(string $url): string {
+	$url = \preg_replace('/\v(?:[\v\h]+)/', ' ', $url);
+	$url = \str_replace('"', "'", $url);
+	$url = \rawurlencode($url);
 	// re-decode a few characters understood by browsers to improve compression
-	$data = \str_replace('%20', ' ', $data);
-	$data = \str_replace('%3D', '=', $data);
-	$data = \str_replace('%3A', ':', $data);
-	$data = \str_replace('%2F', '/', $data);
-	return $data;
+	$url = \str_replace('%20', ' ', $url);
+	$url = \str_replace('%3D', '=', $url);
+	$url = \str_replace('%3A', ':', $url);
+	$url = \str_replace('%2F', '/', $url);
+	return $url;
 }
 
-function transformUser($data) {
+/**
+ * Méthode qui permet de faire l'intégration de l'autocomplete de materialize
+ * 
+ * [Voir la doc](https://materializecss.com/autocomplete.html)
+ *
+ * @param array $data tableau d'utilisateur
+ *
+ * @return array tableau d'utilisateur transformé
+ */
+function transformUser(array $data): array {
 	$return = [];
 	foreach ($data as $user) {
 		if ($user['avatar']['type'] == 'IMG') $return["{$user['firstName']} {$user['lastName']}"] = "src/img/".$user['avatar']['path'];
