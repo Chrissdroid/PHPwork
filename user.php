@@ -1,9 +1,7 @@
 <?php
 require_once './src/php/database.php';
 
-if (isset($_GET['id'])) $user = $data[$_GET['id']];
-else header('Location: ./');
-
+(isset($_GET['id'])) ? $user = $data[$_GET['id']] : header('Location: ./');
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -11,12 +9,12 @@ else header('Location: ./');
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Document</title>
+	<title><?= isset($user) ? "{$user['firstName']} {$user['lastName']}" : '404' ?></title>
 
 	<link rel="preconnect" href="https://fonts.gstatic.com">
 	<link href="https://fonts.googleapis.com/css2?family=Nunito&display=swap" rel="stylesheet">
 
-	<link rel="stylesheet" href="src/css/main.css">
+	<link rel="preload stylesheet" as="style" href="src/css/main.css">
 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 
@@ -30,7 +28,7 @@ else header('Location: ./');
 		</div>
 	</nav>
 	<main>
-		<?php if (isset($user)) { ?>
+		<?php if (isset($user)): ?>
 		<section>
 			<div class="row">
 				<div class="col s12 m8 l6">
@@ -39,8 +37,7 @@ else header('Location: ./');
 							<img src="src/img/unnamed.jpg">
 							<h1 class="card-title"><strong><?= "{$user['firstName']} {$user['lastName']}" ?></strong>
 							</h1>
-							<a
-								class="btn-floating btn-large halfway-fab waves-effect waves-light <?= "{$user['theme']['color']} {$user['theme']['acc']}" ?>">
+							<a class="btn-floating btn-large halfway-fab waves-effect waves-light <?= implode(' ', $user['theme']) ?>">
 								<?php if ($user['avatar']['type'] == 'IMG'): ?>
 
 								<img src="src/img/<?= $user['avatar']['path'] ?>"
@@ -60,7 +57,7 @@ else header('Location: ./');
 						</div>
 						<div class="card-content">
 							<span style="margin-left:0;margin-right:14px"
-								class="left new badge <?= "{$user['theme']['color']} {$user['theme']['acc']}" ?>"
+								class="left new badge <?= implode(' ', $user['theme']) ?>"
 								data-badge-caption="ans"><?= $user['age'] ?></span>
 							<p><?= $user['description'] ?></p>
 						</div>
@@ -68,11 +65,11 @@ else header('Location: ./');
 				</div>
 			</div>
 		</section>
-		<?php } else { ?>
+		<?php else: ?>
 		<blockquote>
 			L'utilisateur n'existe pas
 		</blockquote>
-		<?php } ?>
+		<?php endif; ?>
 	</main>
 
 	<script src="src/js/bin/materialize.min.js"></script>
