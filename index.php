@@ -1,50 +1,9 @@
 <?php
+require_once './src/php/controller.php';
 require_once './src/php/database.php';
 
-if (!empty($_GET['q']))
-	foreach ($data as $id => $user)
-		stripos("{$user['firstName']} {$user['lastName']}", $_GET['q']) === false ?: $results[$id] = $user;
-
-$results = $results ?? $data;
-
-/**
- * Méthode pour transformer un code svg en url
- *
- * @param string $url code svg à transformer 
- *
- * @return string code formaté
- */
-function svgUrlEncode(string $url): string {
-	$url = \preg_replace('/\v(?:[\v\h]+)/', ' ', $url);
-	$url = \str_replace('"', "'", $url);
-	$url = \rawurlencode($url);
-	// re-decode a few characters understood by browsers to improve compression
-	$url = \str_replace('%20', ' ', $url);
-	$url = \str_replace('%3D', '=', $url);
-	$url = \str_replace('%3A', ':', $url);
-	$url = \str_replace('%2F', '/', $url);
-	return $url;
-}
-
-/**
- * Méthode qui permet de faire l'intégration de l'autocomplete de materialize
- * 
- * [Voir la doc](https://materializecss.com/autocomplete.html)
- *
- * @param array $data tableau d'utilisateur
- *
- * @return array tableau d'utilisateur transformé
- */
-function transformUser(array $data): array {
-	foreach ($data as $user)
-		$return["{$user['firstName']} {$user['lastName']}"] = ($user['avatar']['type'] == 'IMG') ?
-			("src/img/".$user['avatar']['path']) :
-			(($user['avatar']['type'] == 'SVG') ?
-				'data:image/svg+xml,'.svgUrlEncode('<svg width="42" height="42" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">'.$user['avatar']['path']."</svg>") :
-				null
-			);
-	return $return ?? [];
-}
+$instance = new searchController($data);
+$results = $instance->makeSearch($_GET['q'] ?? null)
 
 ?>
 <!DOCTYPE html>
@@ -76,44 +35,10 @@ function transformUser(array $data): array {
 				<?php if (count($results)) { ?>
 				<ul class="collection">
 
-					<?php foreach ($results as $id => $result) { ?>
+					<?php foreach ($results as $id => $user) { ?>
 
 					<li class="collection-item avatar">
-						<?php if ($result['avatar']['type'] == 'IMG'): ?>
-
-						<img src="src/img/<?= $result['avatar']['path'] ?>"
-							alt="<?= "Avatar de {$result['firstName']} {$result['lastName']}" ?>" class="circle">
-
-						<?php elseif ($result['avatar']['type'] == 'SVG'): ?>
-						<div class="circle <?= implode(' ', $result['theme']) ?>">
-							<svg width="42" height="42" viewBox="0 0 24 24" fill="none"
-								xmlns="http://www.w3.org/2000/svg">
-								<?= $result['avatar']['path'] ?>
-							</svg>
-						</div>
-
-						<?php endif; ?>
-
-						<span class="title"><?= "{$result['firstName']} {$result['lastName']}" ?></span>
-
-						<p>
-							<span class="new badge <?= implode(' ', $result['theme']) ?>" style="float:none" data-badge-caption="ans">
-								<?= $result['age'] ?>
-							</span>
-						</p>
-
-						<a href="user.php?id=<?= $id ?>"
-							class="secondary-content tooltipped <?= "{$result['theme']['color']}-text text-{$result['theme']['acc']}" ?>" data-position="left" data-tooltip="Voir plus">
-							<svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-								xmlns="http://www.w3.org/2000/svg">
-								<path
-									d="M12.0519 14.8285L13.4661 16.2427L17.7087 12L13.4661 7.7574L12.0519 9.17161L13.8803 11H6.34318V13H13.8803L12.0519 14.8285Z"
-									fill="currentColor" />
-								<path fill-rule="evenodd" clip-rule="evenodd"
-									d="M1 19C1 21.2091 2.79086 23 5 23H19C21.2091 23 23 21.2091 23 19V5C23 2.79086 21.2091 1 19 1H5C2.79086 1 1 2.79086 1 5V19ZM5 21H19C20.1046 21 21 20.1046 21 19V5C21 3.89543 20.1046 3 19 3H5C3.89543 3 3 3.89543 3 5V19C3 20.1046 3.89543 21 5 21Z"
-									fill="currentColor" />
-							</svg>
-						</a>
+						<?php include './src/template/user.php' ?>
 					</li>
 
 					<?php } ?>
@@ -143,7 +68,7 @@ function transformUser(array $data): array {
 		M.AutoInit();
 
 		M.Autocomplete.init(document.querySelectorAll('.autocomplete'), {
-			data: <?= json_encode(transformUser($data)) ?>,
+			data: <?= json_encode($instance->transformUser()) ?>,
 			onAutocomplete: () => {
 				let form = document.querySelector('#searchForm');
 				form.submit();
