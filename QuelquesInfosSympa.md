@@ -78,7 +78,7 @@ while ($user = $query->fetch()) {
 ```php
 $id = 30;
 
-$query = $bdd->query("SELECT * FROM user WHERE id = {$id};");
+$query = $bdd->query("SELECT * FROM user WHERE id = $id;");
 $data = $query->fetch();
 
 echo $data['id'];
@@ -88,7 +88,7 @@ echo $data['id'];
 
 ```php
 $données = [
-    'id' => 30
+    'identifiant' => 30
 ];
 
 $query = $bdd->prepare("SELECT * FROM user WHERE id = :identifiant;");
